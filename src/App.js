@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Feedback from './components/Feedback/Feedback';
 import Statistics from './components/Statistics/Statistics';
 import Notification from './components/Notification/Notification';
@@ -9,16 +9,19 @@ export default function App() {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  const getGoodIncrement = () => {
-    setGood(prevState => prevState + 1);
-  };
+  const getFeedback = type => {
+    switch (type) {
+      case 'good':
+        return setGood(good + 1);
 
-  const getNeutralIncrement = () => {
-    setNeutral(prevState => prevState + 1);
-  };
+      case 'neutral':
+        return setNeutral(neutral + 1);
 
-  const getBadIncrement = () => {
-    setBad(prevState => prevState + 1);
+      case 'bad':
+        return setBad(bad + 1);
+
+      default:
+    }
   };
 
   function countTotalFeedback() {
@@ -29,33 +32,10 @@ export default function App() {
     return Math.round((good / countTotalFeedback()) * 100);
   }
 
+  const key = Object.keys({ good, neutral, bad });
   return (
     <Container>
-      <button
-        className="button"
-        type="button"
-        name={good}
-        onClick={getGoodIncrement}
-      >
-        {good}
-      </button>
-      <button
-        className="button"
-        type="button"
-        name={neutral}
-        onClick={getNeutralIncrement}
-      >
-        {neutral}
-      </button>
-      <button
-        className="button"
-        type="button"
-        name={bad}
-        onClick={getBadIncrement}
-      >
-        {bad}
-      </button>
-      {/* <Feedback options={[good, neutral, bad]} onLeaveFeedback={getFeedback} /> */}
+      <Feedback options={key} onLeaveFeedback={getFeedback} />
 
       {[good, neutral, bad].some(value => value > 0) ? (
         <Statistics
@@ -71,6 +51,7 @@ export default function App() {
     </Container>
   );
 }
+
 // class App extends Component {
 //   static defaultProps = {
 //     positivePercentage: 0,
